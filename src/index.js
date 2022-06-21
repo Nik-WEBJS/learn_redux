@@ -1,8 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import * as actions from "./store/actions"
+import { initialStore } from './store/store';
+
+const store = initialStore()
+
+const App = () => {
+  const [state, setState] = useState(store.getState()) 
+
+  useEffect(()=>{
+    store.subscribe(()=>{setState(store.getState())})
+  },[])
+
+  const completeTask =(taskId)=>{ 
+    store.dispatch(actions.taskCompleted(taskId)) 
+  }
+
+  const changeTitle = (taskId)=>{
+    store.dispatch(actions.titleChanged(taskId)) 
+  }
+
+  const deleteTask = (taskId)=>{
+    store.dispatch(actions.deleteTask(taskId))
+  }
+
+  
+  return <>
+  
+  <h1>app</h1>
+ 
+  <ul>
+    {state.map(el=>(
+    <li key={el.id}>
+      <p>{el.title}</p>
+      <p>{`Completed: ${el.completed}`}</p>
+      <button onClick={()=>completeTask(el.id)}>completed</button>
+      <button onClick={()=>changeTitle(el.id)}>change title</button>
+      <button onClick={()=>deleteTask(el.id)}>delete task</button>
+      <hr />
+    </li>
+    ))}
+  </ul>
+
+  </>
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -11,7 +52,3 @@ root.render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
