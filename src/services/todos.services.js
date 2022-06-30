@@ -1,16 +1,20 @@
-import httpService from "./http.services"
+import httpService from "./http.services";
+const todosEndPoint = "todos/";
 
-const todosEndpoint = "todos/"
+const todosService = {
+  fetch: async () => {
+    const { data } = await httpService.get(todosEndPoint, {
+      params: {
+        _page: 1,
+        _limit: 10,
+      },
+    });
+    return data;
+  },
+  create: async (payload) => {
+    const { data } = await httpService.post(todosEndPoint, payload);
+    return data;
+  },
+};
 
-const todosService={
-    fetch: async()=>{
-        const {data} = await httpService.get(todosEndpoint,{
-            params:{
-                _page:1,
-                limit: 10,
-            },
-        })
-        return data
-    }
-}
 export default todosService;
